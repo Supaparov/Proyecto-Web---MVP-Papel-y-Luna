@@ -1,0 +1,99 @@
+### A. Crear Categoría (Debe responder 201 y limpio)
+POST http://localhost:3000/api/categorias
+Content-Type: application/json
+
+{
+    "nombre": "Papelería General",
+    "descripcion": "Artículos de oficina y escolares"
+}
+
+### B. Probar Validador de Categoría (Debe fallar - 400)
+# Enviamos nombre vacío para ver si el Validator intercepta
+POST http://localhost:3000/api/productos
+Content-Type: application/json
+
+{
+    "nombre": ""
+}
+
+### C. Crear Cliente (Para probar el fiado después)
+POST http://localhost:3000/api/clientes
+Content-Type: application/json
+
+{
+    "nombre": "Santiago Avila",
+    "saldo_pendiente": 0
+}
+
+### A. Crear Producto (Debe responder 201)
+POST http://localhost:3000/api/productos
+Content-Type: application/json
+
+{
+    "nombre": "Cuaderno 100 Hojas",
+    "sku": "CUA-100",
+    "precio": 5500,
+    "costo": 3000,
+    "stock": 20,
+    "categoriaId": 1
+}
+
+### B. VERIFICAR MIDDLEWARES (GET Productos)
+# AQUÍ PRUEBAS DOS COSAS:
+# 1. Que en la consola de VS Code aparezca el log del RequestLogger.
+# 2. Que en el JSON NO aparezca "categoriaId" (SanitizeIds funcionando).
+GET http://localhost:3000/api/productos
+
+### A. Realizar Venta (Debe restar 5 al stock)
+# Stock inicial: 20 -> Final esperado: 15
+POST http://localhost:3000/api/ventas
+Content-Type: application/json
+
+{
+    "clienteId": 1,
+    "metodo_pago": "Efectivo",
+    "recibido": 30000,
+    "items": [
+        {
+            "productoId": 1,
+            "cantidad": 5
+        }
+    ]
+}
+
+### B. Crear Proveedor
+POST http://localhost:3000/api/proveedores
+Content-Type: application/json
+
+{
+    "nombre": "Distribuidora Nacional",
+    "nit": "123456789-0",
+    "contacto": "3001112233"
+}
+
+### C. Registrar Compra (Debe sumar 50 al stock)
+# Stock actual: 15 -> Final esperado: 65
+POST http://localhost:3000/api/compras
+Content-Type: application/json
+
+{
+    "proveedorId": 1,
+    "productoId": 1,
+    "cantidad": 50,
+    "costo_unitario": 2800,
+    "metodo_pago": "Transferencia"
+}
+
+### A. Verificar Stock Final y Salida Limpia
+# Deberías ver stock: 65 y un JSON sin metadatos de Sequelize (dataValues)
+GET http://localhost:3000/api/productos
+
+### B. Registrar un Faltante
+POST http://localhost:3000/api/faltantes
+Content-Type: application/json
+
+{
+    "nombre_producto": "Marcadores Borrables",
+    "tipo": "pedido_cliente"
+}
+
