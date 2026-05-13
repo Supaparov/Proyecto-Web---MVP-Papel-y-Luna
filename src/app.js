@@ -4,7 +4,9 @@ const cors = require('cors');
 const db = require('./models'); // Importa el index.js de modelos
 
 const requestLogger = require('./middlewares/requestLogger'); // Middleware para logging de solicitudes
-const sanitizeIds = require('./middlewares/sanitizeIds'); // Middleware para limpiar campos con 'Id' en la respuesta
+const sanitizeIds = require('./middlewares/sanitizeIds');// Middleware para limpiar campos con 'Id' en la respuesta
+
+const authRoutes = require('./routes/authRoutes'); // Rutas de autenticación
 
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const productoRoutes = require('./routes/productoRoutes');
@@ -27,6 +29,7 @@ app.use(sanitizeIds); // Middleware para limpiar campos con 'Id' en la respuesta
 
 app.use(express.static('public')); // Para servir el frontend después
 
+app.use('/api/auth', authRoutes); // Rutas de autenticación
 app.use('/api/categorias', categoriaRoutes); // Rutas de categorías
 app.use('/api/productos', productoRoutes); // Rutas de productos
 app.use('/api/ventas', ventaRoutes); // Rutas de ventas
