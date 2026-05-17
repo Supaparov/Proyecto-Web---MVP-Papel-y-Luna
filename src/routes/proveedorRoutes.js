@@ -1,8 +1,15 @@
 const router = require('express').Router();
 const ctrl = require('../controllers/proveedorController');
 const { proveedorRules, validate } = require('../validators/proveedor.validator');
+const authMiddleware = require('../middlewares/authMiddleware'); // Middleware de autenticación
+const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware de autorización por roles
 
-router.post('/', proveedorRules, validate, ctrl.crear);
-router.get('/', ctrl.listar);
+// Todo protegido para ADMIN
+router.use(authMiddleware, roleMiddleware('ADMIN'));
+
+router.get('/', ctrl.list);
+router.post('/', ctrl.create);
+router.put('/:id', ctrl.update);
+router.delete('/:id', ctrl.delete);
 
 module.exports = router;

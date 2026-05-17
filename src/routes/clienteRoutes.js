@@ -2,7 +2,12 @@ const router = require('express').Router();
 const ctrl = require('../controllers/clienteController');
 const { clienteRules, validate } = require('../validators/cliente.validator');
 
-router.post('/', clienteRules, validate, ctrl.crear);
-router.get('/', ctrl.listar);
+// Ambos pueden gestionar clientes para no trabar la venta
+router.get('/', authMiddleware, ctrl.list);
+router.post('/', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), ctrl.create);
+router.put('/:id', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), ctrl.update);
+
+// Solo admin borra clientes
+router.delete('/:id', authMiddleware, roleMiddleware('ADMIN'), ctrl.delete);
 
 module.exports = router;
