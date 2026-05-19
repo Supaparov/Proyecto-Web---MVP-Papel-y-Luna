@@ -31,6 +31,16 @@ app.get('/ping', (req, res) => {
     res.status(200).json({ message: 'pong', status: 'online' });
 });
 
+// PASO 5: Ruta pública de verificación de autoría obligatoria para el despliegue
+app.get('/authors', (req, res) => {
+    res.status(200).json([
+        { 
+            nombre: 'Juan Sebastian Gonzalez', 
+            codigo: '342821' // Pon tu código real de la u
+        }
+    ]);
+});
+
 // Inyección de módulos de rutas
 app.use('/api/auth', authRoutes); 
 app.use('/api/categorias', categoriaRoutes); 
@@ -51,11 +61,15 @@ async function bootstrap() {
         await db.sequelize.authenticate();
         console.log('--- CONEXIÓN DB: EXITOSA ---');
 
-        await db.sequelize.sync({ alter: true });
-        console.log('--- TABLAS SINCRONIZADAS ---');
+        // Solo sincroniza alterando tablas si estamos en desarrollo local (SQLite)
+        // En producción (Render + Postgres) se maneja estrictamente con migraciones
+        if (process.env.NODE_ENV !== 'production') {
+            await db.sequelize.sync({ alter: true });
+            console.log('--- TABLAS SINCRONIZADAS EN LOCAL ---');
+        }
 
         app.listen(PORT, () => {
-            console.log(`--- SERVIDOR CORRIENDO: http://localhost:${PORT} ---`);
+            console.log(`Servidor corriendo en puerto ${PORT}`);
         });
     } catch (error) {
         console.error('--- ERROR CRÍTICO AL INICIAR ---', error);
