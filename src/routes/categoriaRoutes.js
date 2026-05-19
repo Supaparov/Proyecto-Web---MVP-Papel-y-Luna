@@ -13,4 +13,5 @@ router.get('/:id', authMiddleware, ctrl.getById);
 router.post('/', authMiddleware, roleMiddleware('ADMIN'), ctrl.create);
 router.put('/:id', authMiddleware, roleMiddleware('ADMIN'), ctrl.update);
 router.delete('/:id', authMiddleware, roleMiddleware('ADMIN'), ctrl.delete);
+
 module.exports = router;

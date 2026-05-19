@@ -1,6 +1,9 @@
 const router = require('express').Router();
 const ctrl = require('../controllers/clienteController');
 const { clienteRules, validate } = require('../validators/cliente.validator');
+const authMiddleware = require('../middlewares/authMiddleware'); // Middleware de autenticación
+const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware de autorización por roles
+
 
 // Ambos pueden gestionar clientes para no trabar la venta
 router.get('/', authMiddleware, ctrl.list);

@@ -109,3 +109,45 @@ Content-Type: application/json
 ### Obtener productos (PROTEGIDO)
 GET http://localhost:3000/api/productos
 Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3ODYzMTg4MywiZXhwIjoxNzc4NzE4MjgzfQ.4J6dFyF-KDjlWfJH4bzc3LSZ3rhD07kriYL1nHMnWQA
+
+### 1. Login del Cajero (Obtener Token de Menor Rango)
+POST http://localhost:3000/api/auth/login
+Content-Type: application/json
+
+{
+    "username": "cajero",
+    "password": "cajero123"
+}
+
+### Guardas el token que te dé el login de arriba para las siguientes peticiones...
+
+### 2. Cajero intentando ver proveedores (DEBE DAR 403 FORBIDDEN)
+GET http://localhost:3000/api/proveedores
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJjYWplcm8iLCJyb2xlIjoiQ0FKRVJPIiwiaWF0IjoxNzc5MTk5NTUzLCJleHAiOjE3NzkyODU5NTN9.ByU5JvBhbydo8GYTXZMe3neLF39A1kMvM-O-DETkAKo
+
+### 3. Cajero intentando crear un producto (DEBE DAR 403 FORBIDDEN)
+POST http://localhost:3000/api/productos
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJjYWplcm8iLCJyb2xlIjoiQ0FKRVJPIiwiaWF0IjoxNzc5MTk5NTUzLCJleHAiOjE3NzkyODU5NTN9.ByU5JvBhbydo8GYTXZMe3neLF39A1kMvM-O-DETkAKo
+Content-Type: application/json
+
+{
+    "nombre": "Cuaderno cuadriculado",
+    "precio": 5000
+}
+
+### 4. Cajero creando una venta (DEBE DAR 201 CREATED)
+POST http://localhost:3000/api/ventas
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJjYWplcm8iLCJyb2xlIjoiQ0FKRVJPIiwiaWF0IjoxNzc5MTk5NTUzLCJleHAiOjE3NzkyODU5NTN9.ByU5JvBhbydo8GYTXZMe3neLF39A1kMvM-O-DETkAKo
+Content-Type: application/json
+
+{
+    "clienteId": 1,
+    "metodo_pago": "Efectivo",
+    "recibido": 20000,
+    "items": [
+        {
+            "productoId": 1,
+            "cantidad": 2
+        }
+    ]
+}

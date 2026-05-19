@@ -6,6 +6,7 @@ const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware d
 
 // Operación diaria (RF-10 al RF-24)
 router.get('/', authMiddleware, ctrl.list);
+router.get('/:id', authMiddleware, ctrl.getById);
 router.post('/', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), ctrl.create); 
 
 // Correcciones y Reembolsos (RF-50, RF-60, RF-70)
