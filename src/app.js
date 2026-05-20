@@ -36,7 +36,15 @@ app.get('/authors', (req, res) => {
     res.status(200).json([
         { 
             nombre: 'Juan Sebastian Gonzalez', 
-            codigo: '342821' // Pon tu código real de la u
+            codigo: '342821'
+        },
+        { 
+            nombre: 'Julian Villamil', 
+            codigo: '359905'
+        },
+        { 
+            nombre: 'Santiago Avila', 
+            codigo: '331729'
         }
     ]);
 });
