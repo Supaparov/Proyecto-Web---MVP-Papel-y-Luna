@@ -151,3 +151,39 @@ Content-Type: application/json
         }
     ]
 }
+
+@BASE_URL = https://papelyluna-backend.onrender.com/api
+# O usa http://localhost:3000/api si estás probando en local
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJjYWplcm8iLCJyb2xlIjoiQ0FKRVJPIiwiaWF0IjoxNzc5MTk5NTUzLCJleHAiOjE3NzkyODU5NTN9.ByU5JvBhbydo8GYTXZMe3neLF39A1kMvM-O-DETkAKo
+### Login del Cajero (Obtener Token de Menor Rango)
+POST {{BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "username": "cajero",
+    "password": "cajero123"
+}
+
+### PASO 1: Consultar el stock inicial del producto (Anota el valor de 'stock')
+GET {{BASE_URL}}/productos/1
+Authorization: Bearer {{TOKEN}}
+
+### PASO 2: Simular una venta (Debería restar del stock)
+POST {{BASE_URL}}/ventas
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+  "clienteId": 1,
+  "detalles": [
+    {
+      "productoId": 1,
+      "cantidad": 3
+    }
+  ]
+}
+
+### PASO 3: Verificar reducción del stock
+# El valor de 'stock' aquí debe ser exactamente (Stock Inicial - 3)
+GET {{BASE_URL}}/productos/1
+Authorization: Bearer {{TOKEN}}
