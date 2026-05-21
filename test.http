@@ -154,7 +154,7 @@ Content-Type: application/json
 
 @BASE_URL = https://papelyluna-backend.onrender.com/api
 # O usa http://localhost:3000/api si estás probando en local
-@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJjYWplcm8iLCJyb2xlIjoiQ0FKRVJPIiwiaWF0IjoxNzc5MTk5NTUzLCJleHAiOjE3NzkyODU5NTN9.ByU5JvBhbydo8GYTXZMe3neLF39A1kMvM-O-DETkAKo
+@TOKEN = eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MiwidXNlcm5hbWUiOiJjYWplcm8iLCJyb2xlIjoiQ0FKRVJPIiwiaWF0IjoxNzc5NDAyNjAyLCJleHAiOjE3Nzk0ODkwMDJ9.kj1FiuOMBiiIu1hAL6UpMGL99RaUgv2s615ldflQT_E
 ### Login del Cajero (Obtener Token de Menor Rango)
 POST {{BASE_URL}}/auth/login
 Content-Type: application/json
@@ -164,8 +164,52 @@ Content-Type: application/json
     "password": "cajero123"
 }
 
+### Login del Administrador (Obtener Token de Mayor Rango)
+POST {{BASE_URL}}/auth/login
+Content-Type: application/json
+
+{
+    "username": "admin",
+    "password": "admin123"
+}
+
+### Crear categoría para la prueba
+POST {{BASE_URL}}/categorias
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3OTQwMjY5MSwiZXhwIjoxNzc5NDg5MDkxfQ.zwbkDalU8N4fZPTQYkQa4a4oEvFfz5WxnXLge6Ml9SU
+Content-Type: application/json
+
+{
+    "nombre": "Papelería General",
+    "descripcion": "Artículos de oficina y escolares"
+}
+
+### Crear producto para la prueba (Stock inicial: 20)
+POST {{BASE_URL}}/productos
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwidXNlcm5hbWUiOiJhZG1pbiIsInJvbGUiOiJBRE1JTiIsImlhdCI6MTc3OTQwMjY5MSwiZXhwIjoxNzc5NDg5MDkxfQ.zwbkDalU8N4fZPTQYkQa4a4oEvFfz5WxnXLge6Ml9SU
+Content-Type: application/json
+
+{
+    "nombre": "Cuaderno 20 Hojas",
+    "sku": "CUA-20",
+    "precio": 3500,
+    "costo": 1500,
+    "stock": 10,
+    "categoriaId": 1
+}
+
+### Crear cliente para la prueba
+POST {{BASE_URL}}/clientes
+Authorization: Bearer {{TOKEN}}
+Content-Type: application/json
+
+{
+    "nombre": "Juan Pérez",
+    "email": "juan.perez@example.com",
+    "telefono": "555-1234"
+}
+
 ### PASO 1: Consultar el stock inicial del producto (Anota el valor de 'stock')
-GET {{BASE_URL}}/productos/1
+GET {{BASE_URL}}/productos/4
 Authorization: Bearer {{TOKEN}}
 
 ### PASO 2: Simular una venta (Debería restar del stock)
@@ -175,15 +219,17 @@ Content-Type: application/json
 
 {
   "clienteId": 1,
-  "detalles": [
+  "metodo_pago": "Efectivo",
+  "recibido": 50000,
+  "items": [
     {
-      "productoId": 1,
-      "cantidad": 3
+      "productoId": 4,
+      "cantidad": 2
     }
   ]
 }
 
 ### PASO 3: Verificar reducción del stock
 # El valor de 'stock' aquí debe ser exactamente (Stock Inicial - 3)
-GET {{BASE_URL}}/productos/1
+GET {{BASE_URL}}/productos/4
 Authorization: Bearer {{TOKEN}}

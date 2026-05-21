@@ -7,8 +7,8 @@ const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware d
 
 // Ambos pueden gestionar clientes para no trabar la venta
 router.get('/', authMiddleware, ctrl.list);
-router.post('/', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), ctrl.create);
-router.put('/:id', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), ctrl.update);
+router.post('/', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), clienteRules, validate, ctrl.create);
+router.put('/:id', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), clienteRules, validate, ctrl.update);
 
 // Solo admin borra clientes
 router.delete('/:id', authMiddleware, roleMiddleware('ADMIN'), ctrl.delete);

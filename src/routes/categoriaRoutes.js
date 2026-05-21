@@ -10,8 +10,8 @@ router.get('/', authMiddleware, ctrl.list);
 router.get('/:id', authMiddleware, ctrl.getById);
 
 // Acciones críticas (RF-81, RF-82, RF-83)
-router.post('/', authMiddleware, roleMiddleware('ADMIN'), ctrl.create);
-router.put('/:id', authMiddleware, roleMiddleware('ADMIN'), ctrl.update);
+router.post('/', authMiddleware, roleMiddleware('ADMIN'), categoriaRules, validate, ctrl.create);
+router.put('/:id', authMiddleware, roleMiddleware('ADMIN'), categoriaRules, validate, ctrl.update);
 router.delete('/:id', authMiddleware, roleMiddleware('ADMIN'), ctrl.delete);
 
 module.exports = router;

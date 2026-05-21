@@ -9,7 +9,7 @@ router.use(authMiddleware, roleMiddleware('ADMIN'));
 
 router.get('/', ctrl.list);
 router.get('/:id', ctrl.getById);
-router.post('/', ctrl.create);
-router.put('/:id', ctrl.update);
+router.post('/', compraRules, validate, ctrl.create);
+router.put('/:id', compraRules, validate, ctrl.update);
 router.delete('/:id', ctrl.delete);
 module.exports = router;
