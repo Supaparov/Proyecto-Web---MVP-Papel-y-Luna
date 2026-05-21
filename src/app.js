@@ -69,12 +69,9 @@ async function bootstrap() {
         await db.sequelize.authenticate();
         console.log('--- CONEXIÓN DB: EXITOSA ---');
 
-        // Solo sincroniza alterando tablas si estamos en desarrollo local (SQLite)
-        // En producción (Render + Postgres) se maneja estrictamente con migraciones
-        if (process.env.NODE_ENV !== 'production') {
-            await db.sequelize.sync({ alter: true });
-            console.log('--- TABLAS SINCRONIZADAS EN LOCAL ---');
-        }
+        // Forzamos la sincronización en cualquier entorno para que Postgres cree las tablas del MVP
+        await db.sequelize.sync({ alter: true });
+        console.log('--- BASE DE DATOS SINCRONIZADA GLOBALMENTE ---');
 
         app.listen(PORT, () => {
             console.log(`Servidor corriendo en puerto ${PORT}`);
