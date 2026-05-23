@@ -1,37 +1,38 @@
-const { Producto, Auditoria, sequelize } = require('../models');
+const { Descuento, Auditoria, sequelize } = require('../models');
 
-const productoController = {
+const descuentoController = {
     async create(req, res, next) {
         const t = await sequelize.transaction();
         try {
-            const nuevo = await Producto.create(req.body, { transaction: t });
-            
+            const nuevo = await Descuento.create(req.body, { transaction: t });
+
             await Auditoria.create({
-                usuarioId: req.user.id,
-                accion: 'CREAR_PRODUCTO',
-                tabla: 'Productos',
+                  usuarioId: req.user.id,
+                accion: 'CREAR_DESCUENTO',
+                tabla: 'Descuentos',
                 registroId: nuevo.id,
-                detalles: `Producto creado: ${nuevo.nombre}`
+                detalles: `Descuento creado: ${nuevo.nombre} (${nuevo.porcentaje}%)`
             }, { transaction: t });
 
             await t.commit();
             res.status(201).json(nuevo);
         } catch (error) {
-            await t.rollback();
+            if (!t.finished) await t.rollback();
             next(error);
         }
     },
 
     async list(req, res, next) {
         try {
-            const lista = await Producto.findAll();
+            // Esto le permite al frontend listar los descuentos para el "sistema de selección"
+            const lista = await Descuento.findAll({ where: { activo: true } });
             res.json(lista);
         } catch (error) { next(error); }
     },
 
     async getById(req, res, next) {
         try {
-            const item = await Producto.findByPk(req.params.id);
+            const item = await Descuento.findByPk(req.params.id);
             if (!item) return res.status(404).json({ error: 'No encontrado' });
             res.json(item);
         } catch (error) { next(error); }
@@ -40,24 +41,24 @@ const productoController = {
     async update(req, res, next) {
         const t = await sequelize.transaction();
         try {
-            const producto = await Producto.findByPk(req.params.id, { transaction: t });
-            if (!producto) {
+            const descuento = await Descuento.findByPk(req.params.id, { transaction: t });
+            if (!descuento) {
                 await t.rollback();
                 return res.status(404).json({ error: 'No encontrado' });
             }
 
-            await producto.update(req.body, { transaction: t });
+            await descuento.update(req.body, { transaction: t });
 
             await Auditoria.create({
                 usuarioId: req.user.id,
-                accion: 'ACTUALIZAR_PRODUCTO',
-                tabla: 'Productos',
+                accion: 'ACTUALIZAR_DESCUENTO',
+                tabla: 'Descuentos',
                 registroId: req.params.id,
-                detalles: `Producto actualizado: ${producto.nombre}. Cambios: ${JSON.stringify(req.body)}`
+                detalles: `Descuento modificado. Nuevos datos: ${JSON.stringify(req.body)}`
             }, { transaction: t });
 
             await t.commit();
-            res.json({ message: 'Actualizado exitosamente' });
+            res.json({ message: 'Descuento actualizado exitosamente' });
         } catch (error) {
             if (!t.finished) await t.rollback();
             next(error);
@@ -67,24 +68,24 @@ const productoController = {
     async delete(req, res, next) {
         const t = await sequelize.transaction();
         try {
-            const producto = await Producto.findByPk(req.params.id, { transaction: t });
-            if (!producto) {
+            const descuento = await Descuento.findByPk(req.params.id, { transaction: t });
+            if (!descuento) {
                 await t.rollback();
                 return res.status(404).json({ error: 'No encontrado' });
             }
 
             await Auditoria.create({
                 usuarioId: req.user.id,
-                accion: 'ELIMINAR_PRODUCTO',
-                tabla: 'Productos',
+                accion: 'ELIMINAR_DESCUENTO',
+                tabla: 'Descuentos',
                 registroId: req.params.id,
-                detalles: `Producto eliminado: ${producto.nombre}`
+                detalles: `Descuento eliminado: ${descuento.nombre}`
             }, { transaction: t });
 
-            await producto.destroy({ transaction: t });
+            await descuento.destroy({ transaction: t });
 
             await t.commit();
-            res.json({ message: 'Eliminado exitosamente' });
+            res.json({ message: 'Descuento eliminado' });
         } catch (error) {
             if (!t.finished) await t.rollback();
             next(error);
@@ -92,4 +93,4 @@ const productoController = {
     }
 };
 
-module.exports = productoController;
+module.exports = descuentoController;

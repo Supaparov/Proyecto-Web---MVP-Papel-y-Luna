@@ -1,4 +1,4 @@
-const { Proveedor } = require('../models');
+const { Proveedor, Auditoria, sequelize } = require('../models');
 
 const proveedorController = {
     async create(req, res, next) {
@@ -24,19 +24,57 @@ const proveedorController = {
     },
 
     async update(req, res, next) {
+        const t = await sequelize.transaction();
         try {
-            const [updated] = await Proveedor.update(req.body, { where: { id: req.params.id } });
-            if (!updated) return res.status(404).json({ error: 'Proveedor no encontrado' });
+            const proveedor = await Proveedor.findByPk(req.params.id, { transaction: t });
+            if (!proveedor) {
+                await t.rollback();
+                return res.status(404).json({ error: 'Proveedor no encontrado' });
+            }
+
+            await proveedor.update(req.body, { transaction: t });
+
+            await Auditoria.create({
+                usuarioId: req.user.id,
+                accion: 'ACTUALIZAR_PROVEEDOR',
+                tabla: 'Proveedores',
+                registroId: req.params.id,
+                detalles: `Proveedor actualizado: ${proveedor.nombre}.`
+            }, { transaction: t });
+
+            await t.commit();
             res.json({ message: 'Proveedor actualizado' });
-        } catch (error) { next(error); }
+        } catch (error) {
+            if (!t.finished) await t.rollback();
+            next(error);
+        }
     },
 
     async delete(req, res, next) {
+        const t = await sequelize.transaction();
         try {
-            const deleted = await Proveedor.destroy({ where: { id: req.params.id } });
-            if (!deleted) return res.status(404).json({ error: 'Proveedor no encontrado' });
+            const proveedor = await Proveedor.findByPk(req.params.id, { transaction: t });
+            if (!proveedor) {
+                await t.rollback();
+                return res.status(404).json({ error: 'Proveedor no encontrado' });
+            }
+
+            await Auditoria.create({
+                usuarioId: req.user.id,
+                accion: 'ELIMINAR_PROVEEDOR',
+                tabla: 'Proveedores',
+                registroId: req.params.id,
+                detalles: `Proveedor eliminado: ${proveedor.nombre}`
+            }, { transaction: t });
+
+            await proveedor.destroy({ transaction: t });
+
+            await t.commit();
             res.json({ message: 'Proveedor eliminado' });
-        } catch (error) { next(error); }
+        } catch (error) {
+            if (!t.finished) await t.rollback();
+            next(error);
+        }
     }
 };
 

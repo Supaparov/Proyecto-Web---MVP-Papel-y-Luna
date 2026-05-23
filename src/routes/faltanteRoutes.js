@@ -4,11 +4,13 @@ const { faltanteRules, validate } = require('../validators/faltante.validator');
 const authMiddleware = require('../middlewares/authMiddleware'); // Middleware de autenticación
 const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware de autorización por roles
 
-// Registrar faltante (Cajero y Admin)
-router.post('/', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), faltanteRules, validate, ctrl.create);
+router.use(authMiddleware);
 
-// Ver historial de faltantes y marcar como resuelto (Admin)
-router.get('/', authMiddleware, roleMiddleware('ADMIN'), ctrl.list);
-router.put('/:id', authMiddleware, roleMiddleware('ADMIN'), faltanteRules, validate, ctrl.update);
+// CRUD alineado a los 3 campos del modelo e inyectando express-validator
+router.post('/', faltanteRules, validate, ctrl.create);
+router.get('/reporte', roleMiddleware(['ADMIN']), ctrl.listConsolidated);
+router.get('/', ctrl.listAll);
+router.put('/:id', roleMiddleware(['ADMIN']), faltanteRules, validate, ctrl.update);
+router.delete('/:id', roleMiddleware(['ADMIN']), ctrl.delete);
 
 module.exports = router;

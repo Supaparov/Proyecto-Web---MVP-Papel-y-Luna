@@ -17,8 +17,7 @@ module.exports = (sequelize) => {
         sku: { type: DataTypes.STRING, unique: true },
         precio: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
         costo: { type: DataTypes.DECIMAL(10, 2), allowNull: false },
-        stock: { type: DataTypes.INTEGER, defaultValue: 0 },
-        categoria: { type: DataTypes.STRING }
+        stock: { type: DataTypes.INTEGER, defaultValue: 0 }
     }, {
         sequelize,
         modelName: 'Producto',

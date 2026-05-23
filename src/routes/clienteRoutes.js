@@ -7,6 +7,7 @@ const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware d
 
 // Ambos pueden gestionar clientes para no trabar la venta
 router.get('/', authMiddleware, ctrl.list);
+router.get('/:id', authMiddleware, ctrl.getById);
 router.post('/', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), clienteRules, validate, ctrl.create);
 router.put('/:id', authMiddleware, roleMiddleware(['ADMIN', 'CAJERO']), clienteRules, validate, ctrl.update);
 

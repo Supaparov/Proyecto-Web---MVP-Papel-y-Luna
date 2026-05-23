@@ -6,6 +6,7 @@ const db = require('./models');
 const requestLogger = require('./middlewares/requestLogger'); 
 const sanitizeIds = require('./middlewares/sanitizeIds');
 
+const descuentoRoutes = require('./routes/descuentoRoutes');
 const authRoutes = require('./routes/authRoutes'); 
 const categoriaRoutes = require('./routes/categoriaRoutes');
 const productoRoutes = require('./routes/productoRoutes');
@@ -58,6 +59,7 @@ app.use('/api/clientes', clienteRoutes);
 app.use('/api/proveedores', proveedorRoutes); 
 app.use('/api/compras', compraRoutes); 
 app.use('/api/faltantes', faltanteRoutes); 
+app.use('/api/descuentos', descuentoRoutes);
 
 // Manejo centralizado de errores (SIEMPRE AL FINAL)
 app.use(errorHandler); 

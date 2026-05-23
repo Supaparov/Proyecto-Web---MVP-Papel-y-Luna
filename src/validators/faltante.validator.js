@@ -1,19 +1,26 @@
 const { body, validationResult } = require('express-validator');
 
 exports.faltanteRules = [
+    // 1. Reglas de validación para los campos del modelo informativo
     body('nombre_producto')
-        .isString().trim().notEmpty().withMessage('Debe indicar qué producto falta'),
+        .trim()
+        .notEmpty().withMessage('El nombre del producto es obligatorio'),
+        
     body('tipo')
-        .isIn(['agotado', 'pedido_cliente'])
-        .withMessage('El tipo debe ser: agotado o pedido_cliente'),
+        .trim()
+        .notEmpty().withMessage('El tipo de faltante es obligatorio'),
+
     body('estado')
         .optional()
-        .isIn(['pendiente', 'comprado', 'descartado'])
-        .withMessage('Estado no válido')
+        .isIn(['Pendiente', 'Comprado']).withMessage('El estado debe ser Pendiente o Comprado')
+    
 ];
 
 exports.validate = (req, res, next) => {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) return res.status(400).json({ errors: errors.array() });
-    next();
+    // 2. Middleware que frena la petición si express-validator encuentra errores
+    const errores = validationResult(req);
+    if (!errores.isEmpty()) {
+        return res.status(400).json({ errores: errores.array() });
+    }
+    next(); // Si todo está bien, pasa al controlador
 };

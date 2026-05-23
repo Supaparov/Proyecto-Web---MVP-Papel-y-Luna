@@ -12,8 +12,8 @@ module.exports = (req, res, next) => {
     }
 
     try {
-        // 2. Verificar el token
-        const verified = jwt.verify(token, process.env.JWT_SECRET);
+        // 2. Verificar el token (usando el mismo secret que en authController)
+        const verified = jwt.verify(token, process.env.JWT_SECRET || 'default_secret_key');
         
         // 3. Guardar los datos del usuario en el request para uso posterior
         req.user = verified;

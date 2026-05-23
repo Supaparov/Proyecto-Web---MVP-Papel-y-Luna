@@ -1,8 +1,8 @@
 const { body, validationResult } = require('express-validator');
 
 exports.ventaRules = [
-    body('metodo_pago').isIn(['Efectivo', 'Transferencia', 'Debe'])
-        .withMessage('Método de pago no válido'),
+    body('metodo_pago').isIn(['Efectivo', 'Nequi', 'Debe'])
+        .withMessage('El método de pago debe ser Efectivo, Nequi o Debe'),
     body('recibido').isFloat({ min: 0 }).withMessage('Monto recibido inválido'),
     body('items').isArray({ min: 1 }).withMessage('La venta debe tener al menos un producto'),
     body('items.*.productoId').isInt().withMessage('ID de producto inválido'),

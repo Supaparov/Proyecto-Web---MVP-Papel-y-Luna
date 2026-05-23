@@ -1,20 +1,17 @@
-'use strict';
-const { Model, DataTypes } = require('sequelize');
-
-module.exports = (sequelize) => {
-  class Faltante extends Model {
-    static associate(models) {}
-  }
-  Faltante.init({
-    nombre_producto: { type: DataTypes.STRING, allowNull: false },
-    tipo: { 
-      type: DataTypes.ENUM('agotado', 'no registrado'), 
-      allowNull: false 
-    },
-    estado: { 
-      type: DataTypes.ENUM('pendiente', 'resuelto', 'descartado'), 
-      defaultValue: 'pendiente' 
-    }
-  }, { sequelize, modelName: 'Faltante' });
-  return Faltante;
+module.exports = (sequelize, DataTypes) => {
+    const Faltante = sequelize.define('Faltante', {
+        nombre_producto: {
+            type: DataTypes.STRING,
+            allowNull: false
+        },
+        tipo: {
+            type: DataTypes.STRING, // Ejemplo: 'Agotado' o 'No existe'
+            allowNull: false
+        },
+        estado: {
+            type: DataTypes.STRING,
+            defaultValue: 'Pendiente' // 'Pendiente', 'Comprado'
+        }
+    });
+    return Faltante;
 };

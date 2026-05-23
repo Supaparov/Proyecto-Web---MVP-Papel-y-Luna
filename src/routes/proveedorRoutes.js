@@ -8,6 +8,7 @@ const roleMiddleware = require('../middlewares/roleMiddleware'); // Middleware d
 router.use(authMiddleware, roleMiddleware('ADMIN'));
 
 router.get('/', ctrl.list);
+router.get('/:id', ctrl.getById);
 router.post('/', proveedorRules, validate, ctrl.create);
 router.put('/:id', proveedorRules, validate, ctrl.update);
 router.delete('/:id', ctrl.delete);
