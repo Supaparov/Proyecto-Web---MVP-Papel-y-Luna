@@ -3,11 +3,13 @@ databases:
     plan: free
 
 services:
+  # Backend API
   - type: web
     name: papelyluna-backend
     runtime: node
     plan: free
-    buildCommand: "npm install && npm run migrate"
+    rootDir: backend
+    buildCommand: "npm install && npm run migrate && npm run seed"
     startCommand: "npm start"
     envVars:
       - key: DATABASE_URL
@@ -18,3 +20,19 @@ services:
         value: production
       - key: JWT_SECRET
         generateValue: true
+      - key: PORT
+        value: "3000"
+
+  # Frontend
+  - type: web
+    name: papelyluna-frontend
+    runtime: node
+    plan: free
+    rootDir: frontend
+    buildCommand: "npm install && npm run build"
+    startCommand: "npm run preview"
+    envVars:
+      - key: VITE_API_URL
+        value: "https://papelyluna-backend.onrender.com/api"
+      - key: NODE_ENV
+        value: production

@@ -100,6 +100,34 @@ dist
 # vuepress build output
 .vuepress/dist
 
+# Archivos de entorno del proyecto
+.env
+.env.local
+.env.*.local
+
+# Base de datos local (SQLite)
+database.sqlite
+database.sqlite-shm
+database.sqlite-wal
+
+# Configuración de Sequelize
+.sequelizerc
+
+# Archivos de debug/generados
+codigo_completo.txt
+backend.log
+
+# IDE específicos
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Sistema operativo
+.DS_Store
+Thumbs.db
+
 # vuepress v2.x temp and cache directory
 .temp
 .cache
